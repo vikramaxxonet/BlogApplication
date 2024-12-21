@@ -33,7 +33,7 @@ public class UserController {
         AppUser newUser = new AppUser();
         newUser.setUsername(userRegistrationDTO.getUsername());
         newUser.setPassword(encodedPassword);
-        newUser.setRole(userRegistrationDTO.getRole() != null ? userRegistrationDTO.getRole() : "USER"); // Default role
+        newUser.setRole(userRegistrationDTO.getRole() != null ? userRegistrationDTO.getRole() : "USER");
         userRepository.save(newUser);
 
         return ResponseEntity.ok("User registered successfully");

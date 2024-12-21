@@ -14,7 +14,6 @@ public class PostController {
     @Autowired
     private PostRepository postRepository;
 
-
     @GetMapping
     public List<Post> getAllPosts() {
         return postRepository.findAll();
