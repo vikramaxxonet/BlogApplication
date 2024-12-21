@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -42,14 +43,20 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> {
-            AppUser appUser = appUserRepository.findByUsername(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
-            return org.springframework.security.core.userdetails.User
-                    .withUsername(appUser.getUsername())
-                    .password(appUser.getPassword())
-                    .roles(appUser.getRole())
-                    .build();
+        return new UserDetailsService() {
+            @Override
+            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+                AppUser appUser = appUserRepository.findByUsername(username)
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+
+
+                return org.springframework.security.core.userdetails.User
+                        .withUsername(appUser.getUsername())
+                        .password(appUser.getPassword())
+                        .roles(appUser.getRole())
+                        .build();
+            }
         };
     }
 
