@@ -1,7 +1,6 @@
 package com.example.BlogApplication.dto;
 
 public class UserRegistrationDTO {
-
     private String username;
     private String password;
     private String role;
@@ -30,3 +29,4 @@ public class UserRegistrationDTO {
         this.role = role;
     }
 }
+

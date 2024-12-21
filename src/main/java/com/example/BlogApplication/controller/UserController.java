@@ -9,7 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/register")
+@RequestMapping("/auth")
 public class UserController {
 
     @Autowired
@@ -18,22 +18,40 @@ public class UserController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    @PostMapping
+
+    @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserRegistrationDTO userRegistrationDTO) {
 
         if (userRepository.existsByUsername(userRegistrationDTO.getUsername())) {
             return ResponseEntity.badRequest().body("Username already exists");
         }
 
+
         String encodedPassword = passwordEncoder.encode(userRegistrationDTO.getPassword());
+
 
         AppUser newUser = new AppUser();
         newUser.setUsername(userRegistrationDTO.getUsername());
         newUser.setPassword(encodedPassword);
-        newUser.setRole(userRegistrationDTO.getRole() != null ? userRegistrationDTO.getRole() : "USER");
+        newUser.setRole(userRegistrationDTO.getRole() != null ? userRegistrationDTO.getRole() : "USER"); // Default role
         userRepository.save(newUser);
 
         return ResponseEntity.ok("User registered successfully");
+    }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUser(@RequestBody UserRegistrationDTO userLoginDTO) {
+
+        AppUser user = userRepository.findByUsername(userLoginDTO.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+
+        if (passwordEncoder.matches(userLoginDTO.getPassword(), user.getPassword())) {
+            return ResponseEntity.ok("Login successful");
+        } else {
+            return ResponseEntity.status(401).body("Invalid credentials");
+        }
     }
 }
 

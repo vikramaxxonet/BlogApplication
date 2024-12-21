@@ -1,6 +1,5 @@
 package com.example.BlogApplication.entity;
 
-
 import jakarta.persistence.*;
 
 @Entity
@@ -11,8 +10,7 @@ public class AppUser {
 
     private String username;
     private String password;
-    private String role; //
-
+    private String role;
 
     public String getUsername() {
         return username;
@@ -26,7 +24,6 @@ public class AppUser {
         return role;
     }
 
-    // Setter methods
     public void setUsername(String username) {
         this.username = username;
     }
